@@ -37,4 +37,15 @@ urlpatterns = [
     
     # 영화 리뷰, 평점 웹크롤링 관련 url 
     path('movie_save', views.movie_save),
+    
+    # 차트 
+    path('chart', views.chart),
+    
+    # 워드클라우드
+    path('wordcloud', views.wordcloud),
+    
+    # 위치 지도 
+    path('map', views.cctv_map),
+    
+    
 ]

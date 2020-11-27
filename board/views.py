@@ -225,18 +225,31 @@ def movie_save(request):
     data=[]
     bigdataPro.movie_crawling(data)
     for row in data:
-        dto=Movie(title=row[0],point=int(row[1]),content=row[2])
+        dto=Movie(title=row[0], point=int(row[1]), content=row[2])
         dto.save()
     return redirect('/')
     
     
-    
+################################################################## 차트
 def chart(request):
     #sql='select title,avg(point) points from board_movie group by title'
     #data=Movie.objects.raw(sql)
-    data=Movie.objects.values('title').annotate(point_avg=Avg('point'))[0:10]
+    data=Movie.objects.values('title').annotate(point_avg = Avg('point'))[0:10]
     df=pd.DataFrame(data)
     bigdataPro.make_graph(df.title, df.point_avg)
-    return render(request,"chart.html",{"data":data}) 
-        
-        
+    return render(request, "chart.html", {"data":data}) 
+
+################################################################## 워드 클라우드
+def wordcloud(request):
+    content = Movie.objects.values('content')
+    df = pd.DataFrame(content)
+    bigdataPro.saveWordcloud(df.content)
+    return render(request, 'wordcloud.html', {'contents': df.content})
+
+################################################################## 위치 지도 작성
+def cctv_map(request):
+    bigdataPro.cctv_map()
+    return render(request, "map/map01.html")
+
+
+
