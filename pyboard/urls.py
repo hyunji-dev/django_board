@@ -18,8 +18,11 @@ from django.urls import path
 from board import views
 from board.views import reply_insert
 
+
 urlpatterns = [
     path('admin/', admin.site.urls), # 관리자용 사이트 
+    
+    path('', views.main),
     
     # 요청 리퀘스트 적어주면 됨 
     # 게시판 관련 url 
@@ -31,4 +34,7 @@ urlpatterns = [
     path('update', views.update),
     path('delete', views.delete),
     path('reply_insert', views.reply_insert),
+    
+    # 영화 리뷰, 평점 웹크롤링 관련 url 
+    path('movie_save', views.movie_save),
 ]
