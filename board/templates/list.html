@@ -1,0 +1,81 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		
+		
+		
+		<!-- 기존 django 파일에 있던 것 -->
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css">
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/nav_sidebar.css">
+		<script src="/static/admin/js/nav_sidebar.js" defer></script>
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css">
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/responsive.css">
+		<meta name="robots" content="NONE,NOARCHIVE">
+	</head>
+	<body>
+		<!-- Header -->
+		<div id="header">
+        	<div id="branding">
+				<h1 id="site-name"><a href="/admin/">Django 관리</a></h1>
+        	</div>
+			<div id="user-tools">
+				환영합니다, <strong>admin</strong>.
+				<a href="/admin">사이트 보기</a> /
+				<a href="/admin/password_change/">비밀번호 변경</a> /
+				<a href="/admin/logout/">로그아웃</a>
+			</div>
+		</div>
+    	<!-- END Header -->
+    	
+    	
+    	
+		<h2>게시판</h2>
+		게시물수 {{boardCount}} <br>
+		<a href="/write" class="list-group-item list-group-item-success" ><strong>글쓰기</strong></a>
+		
+		<table class="table">
+			<thead>
+				<tr class="table-info">
+					<th>번호</th><th>제목</th><th>작성자</th><th>작성일</th>
+					<th>조회수</th><th>첨부파일</th><th>다운로드</th>
+				</tr>
+			</thead>
+			{% for row in boardList %}
+				<tbody>
+					<tr>
+						<td align="center">{{row.idx}}</td>
+						<td><a href="/detail?idx={{row.idx}}">{{row.title}}</a></td>
+						<td>{{row.writer}}</td>
+						<td>{{row.post_date|date:"Y-m-d"}}</td>
+						<td>{{row.hit}}</td>
+						<td>
+							{% if row.filesize > 0 %} 
+								<a href="/download?idx={{row.idx}}">
+									<img src="{% static "images/file.gif "%}"></a>
+							{% endif %}
+						</td>
+						<td>{{row.down}}</td>
+					</tr>
+				</tbody>
+			{% endfor %}
+		</table>
+		
+		
+		<!-- paging: Center-aligned -->
+		<ul class="pagination justify-content-center" style="margin:20px 0">
+			<li class="page-item"><a class="page-link" href="javascript:void(0);">Previous</a></li>
+			<li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
+			<li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+			<li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>
+		</ul>
+	</body>
+</html>

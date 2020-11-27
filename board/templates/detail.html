@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script>
+			$(function(){
+				//댓글 목록 출력
+				//listReply(); //responseText 방식
+				//댓글 쓰기
+				$("#btnReply").click(function(){
+					reply();
+				});	
+			});
+			function listReply(){
+				$.ajax({
+					type: "get",
+					url: "reply_list?board_idx={{dto.idx}}",
+					success: function(result){
+						$("#listReply").html(result);
+					}
+				});
+			}
+			
+			
+			
+			function home(){
+				location.href="/list"
+			}
+			function update(){
+				document.form1.action="update"
+				//document.form1.action="detail?idx={{dto.idx}}"
+				document.form1.submit();
+			}
+			function del(){
+				document.form1.action="delete"
+				document.form1.submit();	
+			}
+		</script>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  		
+  		<!-- 기존 django 파일에 있던 것 -->
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css">
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/nav_sidebar.css">
+		<script src="/static/admin/js/nav_sidebar.js" defer></script>
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css">
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/responsive.css">
+		<meta name="robots" content="NONE,NOARCHIVE">
+		
+		
+		
+		<!-- summernote -->
+		<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+		
+	</head>
+	
+	<body>
+	
+		<!-- Header -->
+		<div id="header">
+        	<div id="branding">
+				<h1 id="site-name"><a href="/admin/">Django 게시물 편집</a></h1>
+        	</div>
+			<div id="user-tools">
+				환영합니다, <strong>admin</strong>.
+				<a href="/admin">사이트 보기</a> /
+				<a href="/admin/password_change/">비밀번호 변경</a> /
+				<a href="/admin/logout/">로그아웃</a>
+			</div>
+		</div>
+    	<!-- END Header -->
+    	
+    	
+		<h2>게시물 편집</h2>
+		<form class="container" method="post" name="form1" enctype="multipart/form-data">
+			<table class="table">
+				<tr>
+					<th>이름</th>
+					<td><input class="form-control" name="writer" value="{{dto.writer}}"></td>
+				</tr>
+				<tr>
+					<th>제목</th>
+					<td><input class="form-control" name="title" value="{{dto.title}}"></td>
+				</tr>
+				<tr>
+					<th>작성일</th>
+					<td>{{dto.post_date}}</td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td><textarea name="content" class="form-control" id="summernote">{{dto.content}}</textarea></td>
+				</tr>
+				<tr>
+					<th>첨부파일</th>
+					<td>
+						{% if dto.filesize > 0 %}
+							<a href="download?idx={{dto.idx}}">{{dto.filename}}</a>  
+							( {{filesize}}KB )	 
+							<br/><br/>
+						{% endif %}
+						<div class="custom-file">
+							<input type="file" name="file" class="custom-file-input" id="customFile">
+							<label class="custom-file-label" for="customFile">{{dto.filename}}</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<input type="hidden" name="idx" value="{{dto.idx}}">
+						
+						<button type="button" onclick="home()" class="btn btn-outline-info">목록</button>
+						<button type="button" onclick="update()" class="btn btn-outline-success">수정</button>
+						<button type="button" onclick="del()" class="btn btn-outline-danger">삭제</button>
+<!-- 						<input type="button" value="목록" onclick="home()" class="btn btn-outline-info"> -->
+<!-- 						<input type="button" value="수정" onclick="update()" class="btn btn-outline-success"> -->
+<!-- 						<input type="button" value="삭제" onclick="del()" class="btn btn-outline-danger"> -->
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+		
+		<!-- 댓글 목록을 출력할 영역 -->
+<!-- 		<table border="1" width="700px"> -->
+<!-- 			{% for row in commentList %} -->
+<!-- 			<tr> -->
+<!-- 			  	<td> -->
+<!-- 			  		{{row.writer}} ( {{row.post_date}} )<br> -->
+<!-- 					{{row.content}} -->
+<!-- 				</td>  		 -->
+<!-- 			</tr> -->
+<!-- 			{% endfor %} -->
+<!-- 		</table> -->
+		<div class="container mt-3">
+			<br/><br/><br/><br/>
+			<h2>Reply List!</h2>
+			{% for row in commentList %}
+				<div class="media border p-3">
+					<img src="static/images/img_avatar3.png" class="mr-3 mt-3 rounded-circle" style="width:60px;">
+					<div class="media-body">
+						<h4>{{row.writer}} <small><i>{{row.post_date}}</i></small></h4>
+						<p>{{row.content}}</p>      
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		
+		<!-- 댓글 작성 -->
+		<form class="container" method="post" action="reply_insert">
+			<br/><br/><br/><br/>
+			{% csrf_token %}
+			<input name="writer" class="form-control" placeholder="이름"><br>
+			<textarea class="form-control" rows="3" name="content" placeholder="댓글을 작성하세요"></textarea><br>
+			<input type="hidden" name="idx" value="{{dto.idx}}">
+			<button class="btn btn-outline-info">댓글쓰기</button>
+		</form>
+		
+		
+		<script>
+			// summernote
+			$('#summernote').summernote({
+// 				tabsize: 2,
+				height: 300
+			});
+		</script>
+		
+		<script>
+			// file upload 
+			$(".custom-file-input").on("change", function() {
+			  var fileName = $(this).val().split("\\").pop();
+			  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+			});
+		</script>
+	</body>
+</html>
